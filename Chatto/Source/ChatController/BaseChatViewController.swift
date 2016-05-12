@@ -54,7 +54,7 @@ public class BaseChatViewController: UIViewController, UICollectionViewDataSourc
             return _chatDataSource
         }
         set {
-            self.setChatDataSource(newValue, triggeringUpdateType: .Normal)
+            self.setChatDataSource(newValue, triggeringUpdateType: .FirstLoad)
         }
     }
 
