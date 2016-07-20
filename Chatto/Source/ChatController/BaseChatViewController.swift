@@ -163,6 +163,7 @@ public class BaseChatViewController: UIViewController, UICollectionViewDataSourc
 
         // AL-982: Hide the default Chatto input UI.
         self.inputContainer.addConstraint(NSLayoutConstraint(item: self.inputContainer, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: 0))
+        hideInputContainer(false)
     }
 
     var isAdjustingInputContainer: Bool = false
