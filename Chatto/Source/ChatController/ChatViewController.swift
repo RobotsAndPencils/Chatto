@@ -158,15 +158,8 @@ public class ChatViewController: UIViewController, UICollectionViewDataSource, U
     }
 
     public func hideInputContainer(hide: Bool) {
-        if (hide) {
-            self.inputContainer.removeConstraint(topConstraint)
-            self.inputContainer.addConstraint(heightConstraint)
-        }
-        else {
-            self.inputContainer.removeConstraint(heightConstraint)
-            self.inputContainer.addConstraint(topConstraint)
-        }
-
+        topConstraint.active = !hide
+        heightConstraint.active = hide
         self.inputContainer.setNeedsUpdateConstraints()
     }
 
