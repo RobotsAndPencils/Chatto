@@ -186,8 +186,13 @@ extension ChatInputBar: ChatInputItemViewDelegate {
 // MARK: - ChatInputBarAppearance
 extension ChatInputBar {
     public func setAppearance(appearance: ChatInputBarAppearance) {
-        self.textView.font = appearance.textInputAppearance.font
-        self.textView.textColor = appearance.textInputAppearance.textColor
+        if let typingAttributes = appearance.textInputAppearance.typingAttributes {
+            self.textView.typingAttributes = typingAttributes
+        } else {
+            self.textView.font = appearance.textInputAppearance.font
+            self.textView.textColor = appearance.textInputAppearance.textColor
+        }
+
         self.textView.textContainerInset = appearance.textInputAppearance.textInsets
         self.textView.setTextPlaceholderFont(appearance.textInputAppearance.placeholderFont)
         self.textView.setTextPlaceholderColor(appearance.textInputAppearance.placeholderColor)

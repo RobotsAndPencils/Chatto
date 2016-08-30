@@ -47,6 +47,7 @@ public struct ChatInputBarAppearance {
         public var placeholderColor = UIColor.grayColor()
         public var placeholderText = ""
         public var textInsets = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0)
+        public var typingAttributes: [String : AnyObject]?
     }
 
     public var sendButtonAppearance = SendButtonAppearance()
