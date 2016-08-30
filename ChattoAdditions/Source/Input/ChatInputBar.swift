@@ -78,8 +78,8 @@ public class ChatInputBar: ReusableXibView {
 
     public override func updateConstraints() {
         if self.showsTextView {
-            NSLayoutConstraint.activateConstraints(self.constraintsForVisibleTextView)
             NSLayoutConstraint.deactivateConstraints(self.constraintsForHiddenTextView)
+            NSLayoutConstraint.activateConstraints(self.constraintsForVisibleTextView)
         } else {
             NSLayoutConstraint.deactivateConstraints(self.constraintsForVisibleTextView)
             NSLayoutConstraint.activateConstraints(self.constraintsForHiddenTextView)
@@ -201,6 +201,14 @@ extension ChatInputBar {
         }
         self.sendButton.titleLabel?.font = appearance.sendButtonAppearance.font
         self.tabBarContainerHeightConstraint.constant = appearance.tabBarAppearance.height
+    }
+    
+    public func setTextViewKeyboardType(keyboardType: UIKeyboardType) {
+        self.textView.keyboardType = keyboardType
+    }
+    
+    public func setTextViewPlaceholder(placeholder: String) {
+        self.textView.setTextPlaceholder(placeholder)
     }
 }
 
