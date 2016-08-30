@@ -69,8 +69,8 @@ public class ChatInputBar: ReusableXibView {
 
     public override func updateConstraints() {
         if self.showsTextView {
-            NSLayoutConstraint.activateConstraints(self.constraintsForVisibleTextView)
             NSLayoutConstraint.deactivateConstraints(self.constraintsForHiddenTextView)
+            NSLayoutConstraint.activateConstraints(self.constraintsForVisibleTextView)
         } else {
             NSLayoutConstraint.deactivateConstraints(self.constraintsForVisibleTextView)
             NSLayoutConstraint.activateConstraints(self.constraintsForHiddenTextView)
@@ -169,6 +169,17 @@ extension ChatInputBar {
         self.textView.setTextPlaceholderColor(appearance.textPlaceholderColor)
         self.textView.setTextPlaceholder(appearance.textPlaceholder)
         self.sendButton.setTitle(appearance.sendButtonTitle, forState: .Normal)
+        self.sendButton.titleLabel?.font = appearance.sendButtonFont
+        self.sendButton.setTitleColor(appearance.sendButtonEnabledColor, forState: .Normal)
+        self.sendButton.setTitleColor(appearance.sendButtonDisabledColor, forState: .Disabled)
+    }
+    
+    public func setTextViewKeyboardType(keyboardType: UIKeyboardType) {
+        self.textView.keyboardType = keyboardType
+    }
+    
+    public func setTextViewPlaceholder(placeholder: String) {
+        self.textView.setTextPlaceholder(placeholder)
     }
 }
 
