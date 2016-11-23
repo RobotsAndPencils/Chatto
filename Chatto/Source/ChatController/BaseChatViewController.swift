@@ -160,10 +160,6 @@ public class BaseChatViewController: UIViewController, UICollectionViewDataSourc
         self.inputContainer.addConstraint(NSLayoutConstraint(item: self.inputContainer, attribute: .Leading, relatedBy: .Equal, toItem: inputView, attribute: .Leading, multiplier: 1, constant: 0))
         self.inputContainer.addConstraint(NSLayoutConstraint(item: self.inputContainer, attribute: .Bottom, relatedBy: .Equal, toItem: inputView, attribute: .Bottom, multiplier: 1, constant: 0))
         self.inputContainer.addConstraint(NSLayoutConstraint(item: self.inputContainer, attribute: .Trailing, relatedBy: .Equal, toItem: inputView, attribute: .Trailing, multiplier: 1, constant: 0))
-
-        // AL-982: Hide the default Chatto input UI.
-        self.inputContainer.addConstraint(NSLayoutConstraint(item: self.inputContainer, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: 0))
-        hideInputContainer(false)
     }
 
     var isAdjustingInputContainer: Bool = false
@@ -194,12 +190,6 @@ public class BaseChatViewController: UIViewController, UICollectionViewDataSourc
             self.isFirstLayout = false
             self.inputContainerBottomConstraint.constant = self.bottomLayoutGuide.length
         }
-    }
-
-    public func hideInputContainer(hide: Bool) {
-        topConstraint.active = !hide
-        heightConstraint.active = hide
-        self.inputContainer.setNeedsUpdateConstraints()
     }
 
     private func adjustCollectionViewInsets() {
