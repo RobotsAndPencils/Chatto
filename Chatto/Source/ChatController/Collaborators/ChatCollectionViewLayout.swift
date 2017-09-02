@@ -33,16 +33,18 @@ public struct ChatCollectionViewLayoutModel {
     let layoutAttributes: [UICollectionViewLayoutAttributes]
     let layoutAttributesBySectionAndItem: [[UICollectionViewLayoutAttributes]]
     let calculatedForWidth: CGFloat
+    let referenceBackgroundAttributes: UICollectionViewLayoutAttributes?
 
-    public static func createModel(_ collectionViewWidth: CGFloat, itemsLayoutData: [(height: CGFloat, bottomMargin: CGFloat)]) -> ChatCollectionViewLayoutModel {
+    public static func createModel(_ collectionViewWidth: CGFloat, itemsLayoutData: [(height: CGFloat, bottomMargin: CGFloat, referenceHighlight: Bool)]) -> ChatCollectionViewLayoutModel {
         var layoutAttributes = [UICollectionViewLayoutAttributes]()
         var layoutAttributesBySectionAndItem = [[UICollectionViewLayoutAttributes]]()
         layoutAttributesBySectionAndItem.append([UICollectionViewLayoutAttributes]())
 
         var verticalOffset: CGFloat = 0
+        var referenceHighlightHeight: CGFloat = 0
         for (index, layoutData) in itemsLayoutData.enumerated() {
             let indexPath = IndexPath(item: index, section: 0)
-            let (height, bottomMargin) = layoutData
+            let (height, bottomMargin, referenceHighlight) = layoutData
             let itemSize = CGSize(width: collectionViewWidth, height: height)
             let frame = CGRect(origin: CGPoint(x: 0, y: verticalOffset), size: itemSize)
             let attributes = UICollectionViewLayoutAttributes(forCellWith: indexPath)
@@ -50,14 +52,25 @@ public struct ChatCollectionViewLayoutModel {
             layoutAttributes.append(attributes)
             layoutAttributesBySectionAndItem[0].append(attributes)
             verticalOffset += itemSize.height
+            if referenceHighlight {
+                referenceHighlightHeight = verticalOffset
+            }
             verticalOffset += bottomMargin
         }
 
+        var referenceBackgroundAttributes: UICollectionViewLayoutAttributes?
+        if referenceHighlightHeight > 0 {
+            referenceBackgroundAttributes = UICollectionViewLayoutAttributes(forDecorationViewOfKind: "ReferenceBackground", with: IndexPath(item: 0, section: 0))
+            referenceBackgroundAttributes?.frame = CGRect(x: 6, y: -6, width: collectionViewWidth - 12, height: referenceHighlightHeight + 12)
+            referenceBackgroundAttributes?.zIndex = -10
+        }
+        
         return ChatCollectionViewLayoutModel(
             contentSize: CGSize(width: collectionViewWidth, height: verticalOffset),
             layoutAttributes: layoutAttributes,
             layoutAttributesBySectionAndItem: layoutAttributesBySectionAndItem,
-            calculatedForWidth: collectionViewWidth
+            calculatedForWidth: collectionViewWidth,
+            referenceBackgroundAttributes: referenceBackgroundAttributes
         )
     }
 
@@ -66,7 +79,8 @@ public struct ChatCollectionViewLayoutModel {
             contentSize: .zero,
             layoutAttributes: [],
             layoutAttributesBySectionAndItem: [],
-            calculatedForWidth: 0
+            calculatedForWidth: 0,
+            referenceBackgroundAttributes: nil
         )
     }
 }
@@ -108,7 +122,11 @@ open class ChatCollectionViewLayout: UICollectionViewLayout {
     }
 
     open override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
-        return self.layoutModel.layoutAttributes.filter { $0.frame.intersects(rect) }
+        var decorations: [UICollectionViewLayoutAttributes] = []
+        if let referenceBackgroundAttributes = layoutModel.referenceBackgroundAttributes {
+            decorations.append(referenceBackgroundAttributes)
+        }
+        return decorations + self.layoutModel.layoutAttributes.filter { $0.frame.intersects(rect) }
     }
 
     open override func layoutAttributesForItem(at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
@@ -117,6 +135,10 @@ open class ChatCollectionViewLayout: UICollectionViewLayout {
         }
         assert(false, "Unexpected indexPath requested:\(indexPath)")
         return nil
+    }
+    
+    open override func layoutAttributesForDecorationView(ofKind elementKind: String, at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
+        return layoutModel.referenceBackgroundAttributes
     }
 
     open override func shouldInvalidateLayout(forBoundsChange newBounds: CGRect) -> Bool {

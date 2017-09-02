@@ -254,11 +254,12 @@ open class BaseChatViewController: UIViewController, UICollectionViewDataSource,
 
         let inputIsAtBottom = self.view.bounds.maxY - self.inputContainer.frame.maxY <= 0
 
-        if allContentFits {
-            self.collectionView.contentOffset.y = -self.collectionView.contentInset.top
-        } else if !isInteracting || inputIsAtBottom {
-            self.collectionView.contentOffset.y = newContentOffsetY
-        }
+        // This logic isn't needed for translucent nav bar.
+//        if allContentFits {
+//            self.collectionView.contentOffset.y = -self.collectionView.contentInset.top
+//        } else if !isInteracting || inputIsAtBottom {
+//            self.collectionView.contentOffset.y = newContentOffsetY
+//        }
     }
 
     func rectAtIndexPath(_ indexPath: IndexPath?) -> CGRect? {

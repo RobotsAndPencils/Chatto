@@ -294,14 +294,14 @@ extension BaseChatViewController: ChatDataSourceDelegateProtocol {
     }
 
     private func createLayoutModel(_ items: ChatItemCompanionCollection, collectionViewWidth: CGFloat) -> ChatCollectionViewLayoutModel {
-        typealias IntermediateItemLayoutData = (height: CGFloat?, bottomMargin: CGFloat)
-        typealias ItemLayoutData = (height: CGFloat, bottomMargin: CGFloat)
+        typealias IntermediateItemLayoutData = (height: CGFloat?, bottomMargin: CGFloat, referenceHighlight: Bool)
+        typealias ItemLayoutData = (height: CGFloat, bottomMargin: CGFloat, referenceHighlight: Bool)
 
         func createLayoutModel(intermediateLayoutData: [IntermediateItemLayoutData]) -> ChatCollectionViewLayoutModel {
             let layoutData = intermediateLayoutData.map { (intermediateLayoutData: IntermediateItemLayoutData) -> ItemLayoutData in
-                return (height: intermediateLayoutData.height!, bottomMargin: intermediateLayoutData.bottomMargin)
+                return (height: intermediateLayoutData.height!, bottomMargin: intermediateLayoutData.bottomMargin, referenceHighlight: intermediateLayoutData.referenceHighlight)
             }
-            return ChatCollectionViewLayoutModel.createModel(collectionViewWidth, itemsLayoutData: layoutData)
+            return ChatCollectionViewLayoutModel.createModel(self.collectionView.bounds.width, itemsLayoutData: layoutData)
         }
 
         let isInbackground = !Thread.isMainThread
@@ -311,12 +311,13 @@ extension BaseChatViewController: ChatDataSourceDelegateProtocol {
         for (index, itemCompanion) in items.enumerated() {
             var height: CGFloat?
             let bottomMargin: CGFloat = itemCompanion.decorationAttributes?.bottomMargin ?? 0
+            let referenceHighlight = itemCompanion.decorationAttributes?.referenceHighlight ?? false
             if !isInbackground || itemCompanion.presenter.canCalculateHeightInBackground {
                 height = itemCompanion.presenter.heightForCell(maximumWidth: collectionViewWidth, decorationAttributes: itemCompanion.decorationAttributes)
             } else {
                 itemsForMainThread.append((index: index, itemCompanion: itemCompanion))
             }
-            intermediateLayoutData.append((height: height, bottomMargin: bottomMargin))
+            intermediateLayoutData.append((height: height, bottomMargin: bottomMargin, referenceHighlight: referenceHighlight))
         }
 
         if itemsForMainThread.count > 0 {

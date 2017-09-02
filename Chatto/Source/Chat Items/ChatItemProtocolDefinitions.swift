@@ -32,6 +32,7 @@ public protocol ChatItemProtocol: class, UniqueIdentificable {
 
 public protocol ChatItemDecorationAttributesProtocol {
     var bottomMargin: CGFloat { get }
+    var referenceHighlight: Bool { get }
 }
 
 public protocol ChatItemPresenterProtocol: class {
